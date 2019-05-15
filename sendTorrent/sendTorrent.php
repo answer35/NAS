@@ -1,9 +1,11 @@
 <?php
-/* Variables */
-/* token a recuper via l'api user */
-$token = 'fa6ee7f7108b27cf0c1ee01ae6243e0b17ra3';
-$torrentPath = "/home/Downloads/Torrents/";
-$folderwatch = "/home/Downloads/FolderWatch/";
+include 'functions.php';
+checkConfig();
+$iniFile = parse_ini_file("alldebrid.ini", true);
+
+$token = $iniFile['Logins']['token'];
+$torrentPath = $iniFile['Paths']['torrentPath'];
+$folderwatch = $iniFile['Logins']['folderWatch'];
 
 #get list of torrent files in downloading folder
 $allFiles = array_diff(scandir('/home/Downloads/Torrents/'), [".", ".."]); 
@@ -51,8 +53,6 @@ if($torrentStatus['success']){
             }
             exec('chmod 777 "'.$folderwatch.$torrent["filename"].'".crawljob');
             /* On supprime le fichier de la liste de alldebrid */
-            
-            $url2 = 'https://alldebrid.fr/torrent/?action=remove&id='.$torrent['id'];
             $deleteTorrent = 'https://api.alldebrid.com/magnet/delete?token='.$token.'&id='.$torrent['id'];
             $deleteTorrentStatus = getHttpRequest($deleteTorrent);
             if($deleteTorrentStatus['success'])
@@ -63,23 +63,4 @@ if($torrentStatus['success']){
     echo "cannot get access to alldebrid...\n";
 }
 
-/* Functions */
-
-/**
- * Function getHttpRequest
- * 
- * @input : $url    - url to ask
- * 
- * @return : $json  - result of httprequest 
- */
-function getHttpRequest($url){
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-    $result = curl_exec($ch);
-    $json = json_decode($result, true);
-    return $json;
-}
 ?>
