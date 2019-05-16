@@ -6,15 +6,20 @@
 # Version : 1.0.1
 # Mise à jour le: 21/03/2017
 ######################################
-echo "Installation de jdk8"
-echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee /etc/apt/sources.list.d/webupd8team-java.list
-echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee -a /etc/apt/sources.list.d/webupd8team-java.list
-apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886
-apt-get update
-apt-get install oracle-java8-installer
+echo "Installation de jdk11"
+sudo apt update
+apt install --yes dirmngr
+sudo apt install --yes default-jdk
+echo 'deb http://ftp.debian.org/debian stretch-backports main' | sudo tee /etc/apt/sources.list.d/stretch-backports.list
+sudo apt update
+sudo apt install --yes openjdk-11-jdk
+apt install libjna-java libjna-jni
+
 echo "Installation de filebot"
 wget -O filebot.deb 'https://app.filebot.net/download.php?type=deb&arch=amd64'
 sudo dpkg -i filebot.deb
+apt install -f 
+filebot --license FileBot_License_P7949491.psm
 echo "Copie des fichiers d'installation du deamon"
 cp etc/init.d/frenchRenamer /etc/init.d/frenchRenamer
 cp usr/bin/frenchRenamer /usr/bin/frenchRenamer
