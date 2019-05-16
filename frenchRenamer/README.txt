@@ -9,7 +9,7 @@ nano usr/bin/frenchRenamer
 # Global declare
 tempFolder='/home/tempMovies'
 movieFolder='/home/Films'
-export HOME=/home/benoit
+export HOME=/home/root
 methode="move" 
 
 # La methode peut etre move | copy | keeplink | symlink | hardlink | test

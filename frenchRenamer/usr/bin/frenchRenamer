@@ -8,7 +8,7 @@
 # Global declare
 tempFolder='/home/tempMovies'
 movieFolder='/home/Films'
-export HOME=/home/benoit
+export HOME=/home/root
 methode="move"
 ################################################################################
 #
