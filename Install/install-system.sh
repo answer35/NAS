@@ -79,3 +79,8 @@ apt install --yes php php-cli php-common php-curl php-mbstring php-mysql php-xml
 #Install git
 apt install git
 
+#debug plex container transcode issue
+sed -i 's/<opts>defaults,nofail,user_xattr,noexec/<opts>defaults,nofail,user_xattr/g' /etc/openmediavault/config.xml
+omv-mkconfb fstab
+reboot
+
