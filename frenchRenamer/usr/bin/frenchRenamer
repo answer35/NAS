@@ -1,0 +1,36 @@
+#!/bin/bash
+
+################################################################################
+#
+#     Function declare
+#
+################################################################################
+# Global declare
+tempFolder='/home/tempMovies'
+movieFolder='/home/Films'
+export HOME=/home/benoit
+methode="move"
+################################################################################
+#
+#     First run script
+#
+################################################################################
+
+################################################################################
+#
+#     Main script (infinite loop)
+#
+################################################################################
+
+while true
+    do
+	NB=`find $tempFolder/ -name \* | wc -l`
+        if [[ "$NB" > 1 ]]; then
+	    echo $(date "+%Y-%m-%d %H:%M:%S")" -- $NB files found">>/var/log/renamer.log
+            filebot --lang fr -script fn:amc --output "$movieFolder" --action "$methode" -non-strict "$tempFolder" --log-file amc.log --def movieFormat="${movieFolder}/{n} - ({y})/{n}{' CD'+pi} - {vf} {subt}" excludeList=amc.txt clean=y --conflict override>>/var/log/renamer.log
+            rm "$movieFolder"/amc.txt
+	fi
+
+	sleep 10
+done
+
