@@ -61,10 +61,10 @@ function getToken($iniFile) {
     echo "try to get pin code from alldebrid\n";
     $apiEndpoint = "https://api.alldebrid.com/pin/get?agent=debridToJdown";
     $pinInfo = getHttpRequest($apiEndpoint);
-    echo "please visit ".$pinInfo['user_url']." when logged in alldebrid: \n";
+    echo "Please login on alldebrid website and visit the link bellow \n\n".$pinInfo['user_url']." \n\n (NO CTRL+C TO COPY !!!!!! Just highlight link ! \n\n";
     $answer = false;
     while (!$answer) {
-        echo "\nAre you sure you want to do this?  Type 'yes' to continue or 'quit' to leave: ";
+        echo "\nHave you validate link? \n Type 'yes' to continue or 'quit' to leave: ";
         $handle = fopen ("php://stdin","r");
         $line = fgets($handle);
         if(trim($line) == 'quit'){
