@@ -2,10 +2,9 @@
 include 'functions.php';
 checkConfig();
 $iniFile = parse_ini_file("alldebrid.ini", true);
-
 $token = $iniFile['Logins']['token'];
-$torrentPath = $iniFile['Paths']['torrentPath'];
-$folderwatch = $iniFile['Logins']['folderWatch'];
+$torrentPath = $iniFile['Paths']['torrentFolder'];
+$folderwatch = $iniFile['Paths']['folderWatch'];
 
 #get list of torrent files in downloading folder
 $allFiles = array_diff(scandir('/home/Downloads/Torrents/'), [".", ".."]); 
@@ -21,7 +20,7 @@ foreach ($allFiles as $id => $filename) {
         exec('mv "/home/Downloads/Torrents/'.$filename.'" "/home/Downloads/Torrents/'.$chaine.'"');
         /* start sending torrent request by Curl */
         $torrent = new CURLFile($torrentPath.$chaine, 'application/x-bittorrent');
-        $addTorrent = curl_init('https://api.alldebrid.com/magnet/upload/file?token='.$token);
+        $addTorrent = curl_init('https://api.alldebrid.com/magnet/upload/file?agent=debridToJdown&token='.$token);
         curl_setopt($addTorrent, CURLOPT_POST, true);
         curl_setopt($addTorrent, CURLOPT_POSTFIELDS, ['files[]' => $torrent]);
         curl_setopt($addTorrent, CURLOPT_RETURNTRANSFER, true);
@@ -37,9 +36,9 @@ foreach ($allFiles as $id => $filename) {
 }
 
 #start getting links from alldebrid
-$torrentList = 'https://api.alldebrid.com/user/torrents?token='.$token;
+$torrentList = 'https://api.alldebrid.com/user/torrents?agent=debridToJdown&token='.$token;
 $torrentStatus = getHttpRequest($torrentList);
-if($torrentStatus['success']){
+if(isset($torrentStatus['success']) && $torrentStatus['success']){
     echo "List recieved\n";
     foreach ($torrentStatus['torrents'] as $key => $torrent) {
         if($torrent['statusCode']==4){
@@ -53,7 +52,7 @@ if($torrentStatus['success']){
             }
             exec('chmod 777 "'.$folderwatch.$torrent["filename"].'".crawljob');
             /* On supprime le fichier de la liste de alldebrid */
-            $deleteTorrent = 'https://api.alldebrid.com/magnet/delete?token='.$token.'&id='.$torrent['id'];
+            $deleteTorrent = 'https://api.alldebrid.com/magnet/delete?agent=debridToJdown&token='.$token.'&id='.$torrent['id'];
             $deleteTorrentStatus = getHttpRequest($deleteTorrent);
             if($deleteTorrentStatus['success'])
                 echo "torrent: ".$torrent['filename']." deleted successfully\n";

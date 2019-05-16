@@ -59,7 +59,7 @@ function checkConfig() {
 function getToken($iniFile) {
     echo "token not existing, check pin code\n";
     echo "try to get pin code from alldebrid\n";
-    $apiEndpoint = "https://api.alldebrid.com/pin/get?agent=Mysoft";
+    $apiEndpoint = "https://api.alldebrid.com/pin/get?agent=debridToJdown";
     $pinInfo = getHttpRequest($apiEndpoint);
     echo "please visit ".$pinInfo['user_url']." when logged in alldebrid: \n";
     $answer = false;
