@@ -14,7 +14,7 @@
 # Then the programm will download docker-compose.yml from GIT
 # and frenchRenamer system service
 #
-# after donloading, please use OMV to create nas drive and mount it
+# after downloading, please use OMV to create nas drive and mount it
 # then create symlinks:
 # Cloud -> /srv/dev-disk-by-label-Nas/6 - Nextcloud/
 # Config -> /srv/dev-disk-by-label-Nas/99-Config/
@@ -48,6 +48,10 @@ deb https://packages.openmediavault.org/public arrakis main
 # deb https://downloads.sourceforge.net/project/openmediavault/packages arrakis partner
 EOF
 
+apt install dirmngr
+apt-key adv --keyserver keys.gnupg.net --recv-key 24863F0C716B980B
+
+
 #Install OMV
 apt update
 apt --allow-unauthenticated install openmediavault-keyring
@@ -58,6 +62,8 @@ apt --yes --auto-remove --show-upgraded \
     --option Dpkg::Options::="--force-confdef" \
     --option DPkg::Options::="--force-confold" \
     install postfix openmediavault
+apt install openmediavault
+
 # Initialize the system and database.
 omv-initsystem
 
