@@ -29,9 +29,9 @@
 
 #------------------
 #Update system
-apt Update
+apt update
 apt upgrade --yes
-apt Update
+apt update
 apt dist-upgrade
 apt install --yes apt-transport-https
 
