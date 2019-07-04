@@ -48,7 +48,7 @@ deb https://packages.openmediavault.org/public arrakis main
 # deb https://downloads.sourceforge.net/project/openmediavault/packages arrakis partner
 EOF
 
-apt install dirmngr
+apt install --yes dirmngr
 apt-key adv --keyserver keys.gnupg.net --recv-key 24863F0C716B980B
 
 
@@ -62,7 +62,7 @@ apt --yes --auto-remove --show-upgraded \
     --option Dpkg::Options::="--force-confdef" \
     --option DPkg::Options::="--force-confold" \
     install postfix openmediavault
-apt install openmediavault
+apt install --yes openmediavault
 
 # Initialize the system and database.
 omv-initsystem
@@ -83,7 +83,7 @@ chmod +x /usr/local/bin/docker-compose
 apt install --yes php php-cli php-common php-curl php-mbstring php-mysql php-xml
 
 #Install git
-apt install git
+apt install --yes git
 
 #debug plex container transcode issue
 sed -i 's/<opts>defaults,nofail,user_xattr,noexec/<opts>defaults,nofail,user_xattr/g' /etc/openmediavault/config.xml
