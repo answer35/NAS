@@ -7,7 +7,7 @@ $torrentPath = $iniFile['Paths']['torrentFolder'];
 $folderwatch = $iniFile['Paths']['folderWatch'];
 
 #get list of torrent files in downloading folder
-$allFiles = array_diff(scandir('/home/Downloads/Torrents/'), [".", ".."]); 
+$allFiles = array_diff(scandir($torrentPath), [".", ".."]); 
 #if there is more than one file, start uploading files to alldebrid
 foreach ($allFiles as $id => $filename) {
     if(strpos($filename,".torrent")>0){
@@ -17,7 +17,7 @@ foreach ($allFiles as $id => $filename) {
         /* As letter '.' has been removed, recreate file extension */
         $chaine = str_replace("_torrent",".torrent",$chaine);
         /* move original file with new name */
-        exec('mv "/home/Downloads/Torrents/'.$filename.'" "/home/Downloads/Torrents/'.$chaine.'"');
+        exec('mv "'.$torrentPath.$filename.'" "'.$torrentPath.$chaine.'"');
         /* start sending torrent request by Curl */
         $torrent = new CURLFile($torrentPath.$chaine, 'application/x-bittorrent');
         $addTorrent = curl_init('https://api.alldebrid.com/magnet/upload/file?agent=debridToJdown&token='.$token);
@@ -28,9 +28,9 @@ foreach ($allFiles as $id => $filename) {
         $uploadStatus = json_decode($resultAddTorrent, true);
         if($uploadStatus['success']){
             echo "added correctly\n";
-            exec("mv /home/Downloads/Torrents/".$chaine." /home/Downloads/Torrents/success/".$chaine);
+            exec("mv ".$torrentPath.$chaine." ".$torrentPath."success/".$chaine);
         } else {
-            exec("mv /home/Downloads/Torrents/".$chaine." /home/Downloads/Torrents/error/".$chaine);
+            exec("mv ".$torrentPath.$chaine." ".$torrentPath."error/".$chaine);
         }
     }
 }
