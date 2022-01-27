@@ -58,8 +58,8 @@ if(isset($torrentStatus["status"]) && $torrentStatus["status"] == "success"){
             foreach ($torrent['links'] as $key => $link) {
                 fputs($crawljobFile,"->NEW ENTRY<- \n");
                 fputs($crawljobFile,"enabled=TRUE \n");
-                fputs($crawljobFile,'text="'.$link['link'].'" \n');
-                fputs($crawljobFile,"packageName=".$torrent["filename"]." \n\n");
+                fputs($crawljobFile,"text=\"".$link['link']."\" \n");
+                fputs($crawljobFile,"packageName=\"".$torrent["filename"]."\" \n\n");
             }
             exec('chmod 777 "'.$folderwatch.'tmp/'.$torrent["filename"].".crawljob");
             //exec('mv "'.$folderwatch.'tmp/'.$torrent["filename"].'.crawljob" "'.$folderwatch.$torrent["filename"].'.crawljob"');
