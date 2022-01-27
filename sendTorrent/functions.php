@@ -59,37 +59,40 @@ function checkConfig() {
 function getToken($iniFile) {
     echo "token not existing, check pin code\n";
     echo "try to get pin code from alldebrid\n";
-    $apiEndpoint = "https://api.alldebrid.com/pin/get?agent=debridToJdown";
-    $pinInfo = getHttpRequest($apiEndpoint);
-    echo "Please login on alldebrid website and visit the link bellow \n\n".$pinInfo['user_url']." \n\n (NO CTRL+C TO COPY !!!!!! Just highlight link ! \n\n";
-    $answer = false;
-    while (!$answer) {
-        echo "\nHave you validate link? \n Type 'yes' to continue or 'quit' to leave: ";
-        $handle = fopen ("php://stdin","r");
-        $line = fgets($handle);
-        if(trim($line) == 'quit'){
-            echo "ABORTING!\n";
-            exit;
-        } elseif (trim($line)=='yes') {
-            $checkUrl = $pinInfo['check_url'];
-            $tokenInfo = getHttpRequest($checkUrl);
-            if($tokenInfo["success"]){
-                echo "\n\n\n SUCCESS !!!! your token is :\n\n";
-                echo $tokenInfo["token"]."\n\n";
-                $iniFile['Logins']["token"] = $tokenInfo["token"];
-                echo "Set value in alldebrid.ini file...";
-                write_ini_file('alldebrid.ini', $iniFile);
-                fclose($handle);
-                echo "\n"; 
-                echo "Thank you, continuing...\n";
-                $answer = true;
-            } else {
-                echo "error during request, please visit link bellow or restart this script...\n\n";
-                echo$pinInfo['user_url']."\n";
+    $apiEndpoint = "https://api.alldebrid.com/v4/pin/get?agent=debridToJdown";
+    $pinInfo = getHttpRequest($apiEndpoint, true);
+    var_dump($pinInfo);
+    echo "Please login on alldebrid website and visit the link bellow \n\n".$pinInfo['data']['user_url']." \n\n (NO CTRL+C TO COPY !!!!!! Just highlight link ! \n\n";
+    $checkUrl = $pinInfo['data']['check_url'];
+    $timerLeft = 600;
+    do {
+        $tokenInfo = getHttpRequest($checkUrl);
+        if ($tokenInfo["status"] == "error") 
+            die ("Either PIN has expired or check endpoind is invalid, check errorCode");
+        
+        if($tokenInfo['data']['activated'] == false){
+            echo "Please login on alldebrid website and visit the link bellow \n\n";
+            echo $pinInfo['data']['user_url']." \n\n (NO CTRL+C TO COPY !!!!!! Just highlight link ! \n\n";
+            echo "remaining seconds : ".$timerLeft."\n";
+            echo "Waiting for you to validate the pin... Sleep for 10 secs\n\n";
+            for ($i=0; $i < 10 ; $i++) { 
+                echo "-";
+                sleep(1);
             }
-            
+            echo "\n\n";
         }
+        
+        $timerLeft-=10;
     }
+    while ($tokenInfo['data']['activated'] == false);
+    echo "\n\n\n SUCCESS !!!! your token is :\n\n";
+    echo $tokenInfo['data']["apikey"]."\n\n";
+    $iniFile['Logins']["token"] = $tokenInfo['data']["apikey"];
+    echo "Set value in alldebrid.ini file...";
+    write_ini_file('alldebrid.ini', $iniFile);
+    fclose($handle);
+    echo "\n"; 
+    echo "Thank you, continuing...\n";          
 }
 
 /**

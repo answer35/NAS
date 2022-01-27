@@ -20,13 +20,13 @@ foreach ($allFiles as $id => $filename) {
         exec('mv "'.$torrentPath.$filename.'" "'.$torrentPath.$chaine.'"');
         /* start sending torrent request by Curl */
         $torrent = new CURLFile($torrentPath.$chaine, 'application/x-bittorrent');
-        $addTorrent = curl_init('https://api.alldebrid.com/magnet/upload/file?agent=debridToJdown&token='.$token);
+        $addTorrent = curl_init('https://api.alldebrid.com/v4/magnet/upload/file?agent=debridToJdown&apikey='.$token);
         curl_setopt($addTorrent, CURLOPT_POST, true);
         curl_setopt($addTorrent, CURLOPT_POSTFIELDS, ['files[]' => $torrent]);
         curl_setopt($addTorrent, CURLOPT_RETURNTRANSFER, true);
         $resultAddTorrent = curl_exec($addTorrent);
         $uploadStatus = json_decode($resultAddTorrent, true);
-        if($uploadStatus['success']){
+        if($uploadStatus['status'] == 'success'){
             echo "added correctly\n";
             exec("mv ".$torrentPath.$chaine." ".$torrentPath."success/".$chaine);
         } else {
@@ -36,25 +36,27 @@ foreach ($allFiles as $id => $filename) {
 }
 
 #start getting links from alldebrid
-$torrentList = 'https://api.alldebrid.com/user/torrents?agent=debridToJdown&token='.$token;
+$torrentList = 'https://api.alldebrid.com/v4/magnet/status?agent=debridToJdown&apikey='.$token;
 $torrentStatus = getHttpRequest($torrentList);
-if(isset($torrentStatus['success']) && $torrentStatus['success']){
+var_dump($torrentStatus);
+if(isset($torrentStatus["status"]) && $torrentStatus["status"] == "success"){
     echo "List recieved\n";
-    foreach ($torrentStatus['torrents'] as $key => $torrent) {
+    foreach ($torrentStatus['data']['magnets'] as $key => $torrent) {
         if($torrent['statusCode']==4){
             echo "Torrent finished, start creating crawjob for ".$torrent["filename"]."\n";
             $crawljobFile = fopen($folderwatch.$torrent["filename"].".crawljob", 'a+');
-            foreach ($torrent['link'] as $key => $link) {
+            foreach ($torrent['links'] as $key => $link) {
                 fputs($crawljobFile,"->NEW ENTRY<- \n");
                 fputs($crawljobFile,"enabled=TRUE \n");
-                fputs($crawljobFile,'text="'.$link.'" \n');
+                fputs($crawljobFile,'text="'.$link['link'].'" \n');
                 fputs($crawljobFile,"packageName=".$torrent["filename"]." \n\n");
             }
             exec('chmod 777 "'.$folderwatch.$torrent["filename"].'".crawljob');
             /* On supprime le fichier de la liste de alldebrid */
-            $deleteTorrent = 'https://api.alldebrid.com/magnet/delete?agent=debridToJdown&token='.$token.'&id='.$torrent['id'];
+            $deleteTorrent = 'https://api.alldebrid.com/v4/magnet/delete?agent=debridToJdown&apikey='.$token.'&id='.$torrent['id'];
             $deleteTorrentStatus = getHttpRequest($deleteTorrent);
-            if($deleteTorrentStatus['success'])
+            var_dump()
+            if($deleteTorrentStatus['status'] == 'success')
                 echo "torrent: ".$torrent['filename']." deleted successfully\n";
         }
     }
