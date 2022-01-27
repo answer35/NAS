@@ -62,7 +62,7 @@ if(isset($torrentStatus["status"]) && $torrentStatus["status"] == "success"){
                 fputs($crawljobFile,"packageName=\"".$torrent["filename"]."\" \n\n");
             }
             exec('chmod 777 "'.$folderwatch.'tmp/'.$torrent["filename"].".crawljob");
-            //exec('mv "'.$folderwatch.'tmp/'.$torrent["filename"].'.crawljob" "'.$folderwatch.$torrent["filename"].'.crawljob"');
+            exec('mv "'.$folderwatch.'tmp/'.$torrent["filename"].'.crawljob" "'.$folderwatch.$torrent["filename"].'.crawljob"');
             /* On supprime le fichier de la liste de alldebrid */
             /*$deleteTorrent = 'https://api.alldebrid.com/v4/magnet/delete?agent=debridToJdown&apikey='.$token.'&id='.$torrent['id'];
             $deleteTorrentStatus = getHttpRequest($deleteTorrent);
