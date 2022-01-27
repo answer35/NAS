@@ -27,9 +27,16 @@ foreach ($allFiles as $id => $filename) {
         $resultAddTorrent = curl_exec($addTorrent);
         $uploadStatus = json_decode($resultAddTorrent, true);
         if($uploadStatus['status'] == 'success'){
-            echo "added correctly\n";
-            exec("mv ".$torrentPath.$chaine." ".$torrentPath."success/".$chaine);
+            if (!isset($uploadStatus['data']['files'][0]['error'])){
+                echo "added correctly\n";
+                exec("mv ".$torrentPath.$chaine." ".$torrentPath."success/".$chaine);
+            } else {
+                echo "Sent but in error in Alldebrid ...\n";
+                exec("mv ".$torrentPath.$chaine." ".$torrentPath."error/".$chaine);
+            }
+            
         } else {
+            echo "Torrent not sent, please check manually ... \n";
             exec("mv ".$torrentPath.$chaine." ".$torrentPath."error/".$chaine);
         }
     }
