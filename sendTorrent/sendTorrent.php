@@ -45,7 +45,6 @@ foreach ($allFiles as $id => $filename) {
 #start getting links from alldebrid
 $torrentList = 'https://api.alldebrid.com/v4/magnet/status?agent=debridToJdown&apikey='.$token;
 $torrentStatus = getHttpRequest($torrentList);
-var_dump($torrentStatus);
 if(isset($torrentStatus["status"]) && $torrentStatus["status"] == "success"){
     echo "List recieved\n";
     foreach ($torrentStatus['data']['magnets'] as $key => $torrent) {
