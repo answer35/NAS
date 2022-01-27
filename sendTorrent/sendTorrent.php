@@ -55,7 +55,6 @@ if(isset($torrentStatus["status"]) && $torrentStatus["status"] == "success"){
             /* On supprime le fichier de la liste de alldebrid */
             $deleteTorrent = 'https://api.alldebrid.com/v4/magnet/delete?agent=debridToJdown&apikey='.$token.'&id='.$torrent['id'];
             $deleteTorrentStatus = getHttpRequest($deleteTorrent);
-            var_dump()
             if($deleteTorrentStatus['status'] == 'success')
                 echo "torrent: ".$torrent['filename']." deleted successfully\n";
         }
