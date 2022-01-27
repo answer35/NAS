@@ -29,9 +29,15 @@ foreach ($allFiles as $id => $filename) {
         if($uploadStatus['status'] == 'success'){
             if (!isset($uploadStatus['data']['files'][0]['error'])){
                 echo "added correctly\n";
+                if (!file_exists($torrentPath."success/")) {
+                    mkdir($torrentPath."success/", 0777, true);
+                }
                 exec("mv ".$torrentPath.$chaine." ".$torrentPath."success/".$chaine);
             } else {
                 echo "Sent but in error in Alldebrid ...\n";
+                if (!file_exists($torrentPath."error/")) {
+                    mkdir($torrentPath."error/", 0777, true);
+                }
                 exec("mv ".$torrentPath.$chaine." ".$torrentPath."error/".$chaine);
             }
             
