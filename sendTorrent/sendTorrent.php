@@ -45,6 +45,7 @@ foreach ($allFiles as $id => $filename) {
 #start getting links from alldebrid
 $torrentList = 'https://api.alldebrid.com/v4/magnet/status?agent=debridToJdown&apikey='.$token;
 $torrentStatus = getHttpRequest($torrentList);
+var_dump($torrentStatus);
 if(isset($torrentStatus["status"]) && $torrentStatus["status"] == "success"){
     echo "List recieved\n";
     foreach ($torrentStatus['data']['magnets'] as $key => $torrent) {
@@ -59,10 +60,10 @@ if(isset($torrentStatus["status"]) && $torrentStatus["status"] == "success"){
             }
             exec('chmod 777 "'.$folderwatch.$torrent["filename"].'".crawljob');
             /* On supprime le fichier de la liste de alldebrid */
-            $deleteTorrent = 'https://api.alldebrid.com/v4/magnet/delete?agent=debridToJdown&apikey='.$token.'&id='.$torrent['id'];
+            /*$deleteTorrent = 'https://api.alldebrid.com/v4/magnet/delete?agent=debridToJdown&apikey='.$token.'&id='.$torrent['id'];
             $deleteTorrentStatus = getHttpRequest($deleteTorrent);
             if($deleteTorrentStatus['status'] == 'success')
-                echo "torrent: ".$torrent['filename']." deleted successfully\n";
+                echo "torrent: ".$torrent['filename']." deleted successfully\n";*/
         }
     }
 } else {
