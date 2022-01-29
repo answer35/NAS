@@ -6,6 +6,8 @@
  * @param null
  * @return null
  */
+
+ 
 function checkConfig() {
     if (file_exists("alldebrid.ini")){
         echo "file exist\n";
